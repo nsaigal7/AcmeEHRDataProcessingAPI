@@ -1,0 +1,332 @@
+{
+  "info": {
+    "_postman_id": "645e5b88-f34a-472f-bf53-791e9888a78d",
+    "name": "Novellia Take Home",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25402878"
+  },
+  "item": [
+    {
+      "name": "Import Files with Extraction Configuration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "type": "file",
+              "key": "file",
+              "src": "input.jsonl"
+            },
+            {
+              "type": "text",
+              "key": "extractionConfig",
+              "value": "{ \"id\": \"all\",   \"subject\": \"all\",  \"code\": \"all\",  \"resourceType\": \"all\",  \"effectiveDateTime\": [\"Observation\"],  \"performedDateTime\": [\"Procedure\"],  \"dosageInstruction\": [\"MedicationRequest\"], \"valueQuantity\": [\"Observation\"],  \"verificationStatus\": [\"Procedure\"], \"status\": [\"Procedure\", \"Condition\", \"MedicationRequest\"] }"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5071/Import/import",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "import"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Import Files with no Extraction Configuration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "type": "file",
+              "key": "file",
+              "src": "input.jsonl"
+            },
+            {
+              "type": "text",
+              "key": "extractionConfig",
+              "value": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5071/Import/import",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "import"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Complete Observation Records that have subject as the Patient PT-001.",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5071/Import/records?resourceType=Observation&subject=Patient%2FPT-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "records"
+          ],
+          "query": [
+            {
+              "key": "resourceType",
+              "value": "Observation"
+            },
+            {
+              "key": "subject",
+              "value": "Patient%2FPT-001"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Specific Fields for Observation Records that have subject as the Patient PT",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5071/Import/records?resourceType=Observation&subject=Patient%2FPT-001&fields=id%2Csubject%2Ccode",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "records"
+          ],
+          "query": [
+            {
+              "key": "resourceType",
+              "value": "Observation"
+            },
+            {
+              "key": "subject",
+              "value": "Patient%2FPT-001"
+            },
+            {
+              "key": "fields",
+              "value": "id%2Csubject%2Ccode"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Attempt to GET Medications for a Patient (Bad Request)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5071/Import/records?resourceType=Medication&subject=Patient%2FPT-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "records"
+          ],
+          "query": [
+            {
+              "key": "resourceType",
+              "value": "Medication"
+            },
+            {
+              "key": "subject",
+              "value": "Patient%2FPT-001"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get a Record by its ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5071/Import/records/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "records",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Transform",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\"resourceTypes\": [\"Observation\"],\n\"transformations\": [\n{\"action\": \"flatten\", \"field\": \"code.coding[0]\"},\n{\"action\": \"extract\", \"field\": \"valueQuantity.value\", \"as\": \"value\"},\n{\"action\": \"extract\", \"field\": \"valueQuantity.unit\", \"as\": \"unit\"}\n],\n\"filters\": {\n\"Subject.Reference\": \"Patient/PT-001\"\n}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5071/Import/transform",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "transform"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Analytics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5071/Import/analytics",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "analytics"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Custom Feature",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "text/plain"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"weightParameters\": {\n    \"Name\": {\n      \"matchType\": 0,\n      \"weight\": 40\n    },\n    \"Gender\": {\n      \"matchType\": 1,\n      \"weight\": 20\n    },\n\"BirthDate\": {\n      \"matchType\": 1,\n      \"weight\": 20\n    }\n  },\n  \"minWeight\": 35,\n  \"maxWeight\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5071/Import/BestMatch?patientId=PT-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5071",
+          "path": [
+            "Import",
+            "BestMatch"
+          ],
+          "query": [
+            {
+              "key": "patientId",
+              "value": "PT-001"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
