@@ -85,7 +85,7 @@ public class ImportController : ControllerBase
     }
 
     [HttpGet("records")]
-    public async Task<ActionResult<List<FhirResource>>> Get([FromQuery] string? resourceType, [FromQuery] string? subject,[FromQuery] string? fields)
+    public async Task<ActionResult<List<FhirResource>>> Get([FromQuery] string? resourceType, [FromQuery] string? subject, [FromQuery] string? fields)
     {
  
         if (!string.IsNullOrWhiteSpace(resourceType) && !ValidResourceTypes.Contains(resourceType))
@@ -106,9 +106,14 @@ public class ImportController : ControllerBase
     }
 
     [HttpGet("records/{id}")]
-    public async Task<ActionResult<Dictionary<string, object?>>> GetRecordById(string id)
+    public async Task<ActionResult<Dictionary<string, object?>>> GetRecordById(string id, [FromQuery] string? fields)
     {
-        var record = await _recordsService.GetByIdAsync(id);
+        var fieldsQuery = new RecordsQueryParameters
+        {
+            Fields = fields
+        };
+
+        var record = await _recordsService.GetByIdAsync(id, fieldsQuery);
  
         if (record == null)
             return NotFound($"No record found with id '{id}'.");

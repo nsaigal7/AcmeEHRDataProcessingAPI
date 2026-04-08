@@ -138,7 +138,7 @@ public class RecordsService
         return map;
     }
 
-    public async Task<FhirResource?> GetByIdAsync(string id)
+    public async Task<Dictionary<string, object?>?> GetByIdAsync(string id, RecordsQueryParameters fieldsQuery)
     {
         FhirResource? match =
             await FindFirstAsync(_store.Patients, id) ??
@@ -147,8 +147,10 @@ public class RecordsService
             await FindFirstAsync(_store.Encounters, id) ??
             await FindFirstAsync(_store.MedicationRequests, id) ??
             (FhirResource?) await FindFirstAsync(_store.Procedures, id);
+        
+        if (match == null) { return null; }
 
-        return match;
+        return ProjectRecord(match, fieldsQuery.ParsedFields());
     }
 
     public async Task<FhirPatient?> GetPatientById(string id)
